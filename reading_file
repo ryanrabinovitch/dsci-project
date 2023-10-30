@@ -1,0 +1,16 @@
+#a few extra things need to be imported in order to remotely read the excel file within the zip file
+import requests
+from io import BytesIO
+import pandas as pd
+from zipfile import ZipFile
+
+#finding and reading the excel file
+zip_file_url = 'https://archive.ics.uci.edu/static/public/257/user+knowledge+modeling.zip'
+response = requests.get(zip_file_url)
+zip_file = ZipFile(BytesIO(response.content))
+excel_file = zip_file.namelist()[0]
+initial_read = pd.read_excel(zip_file.open(excel_file), sheet_name='Training_Data')
+
+#dropping some extra columns not relevant to our analysis. knowledge_training should output just the data and the classification
+knowledge_training = initial_read.drop(columns=['Unnamed: 6', 'Unnamed: 7', 'Attribute Information:'])
+knowledge_training
